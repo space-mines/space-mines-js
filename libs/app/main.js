@@ -7,6 +7,7 @@ var mineMeshes = [];
 var difficulty;
 var mineCount;
 var dimension;
+var gameId;
 
 function get(name){
     if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
@@ -71,7 +72,12 @@ function addMinefieldTo(scene) {
 }
 
 function init() {
+    gameId = get("gameId");
 
+    Api.getGame(gameId);
+}
+
+function startGame() {
     mineCount = get("mineCount");
     dimension = get("dimension");
 
