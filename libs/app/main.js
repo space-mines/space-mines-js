@@ -102,6 +102,19 @@ function getGameData(id) {
     xhttp.send();
 }
 
+function markPod(podId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            gameData = JSON.parse(this.responseText);
+            updateMinefield(gameData.pods);
+        }
+    };
+    xhttp.open("PUT", "http://space-mines-api.herokuapp.com/game/" + gameId + "/pod/" + podId, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+}
+
 function revealPod(podId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -155,11 +168,11 @@ function onMouseDown(event) {
     for(var i = 0; i < intersects.length; ++i) {
         selected = intersects[i].object;
         if(selected.visible) {
+            var pod = Pod.findByMesh(minefield, selected);
             if(event.ctrlKey || event.button != 0) {
-                Pod.mark(minefield, selected);
+                markPod(pod.data.id);
             }
             else {
-                var pod = Pod.select(minefield, selected);
                 revealPod(pod.data.id);
             }
             break;
