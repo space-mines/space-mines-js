@@ -17,6 +17,11 @@ Pod.create = function (podData) {
     return pod;
 };
 
+Pod.update = function(pod) {
+    var color = Pod.getColor(pod.data);
+    pod.mesh.material = new THREE.MeshLambertMaterial({color: color});
+};
+
 Pod.dataToString = function(pod) {
     return "Pod[id=" + pod.data.id + ",x=" + pod.data.x + ",y=" + pod.data.y + ",z=" + pod.data.z +
         ",radiation=" + pod.data.radiation + ",flagged=" + pod.data.flagged + "]";
@@ -62,9 +67,7 @@ Pod.findByMesh = function(minefield, mineMesh) {
 };
 
 Pod.select = function(minefield, mineMesh) {
-    var pod = Pod.findByMesh(minefield, mineMesh);
-    pod.mesh.visible = false;
-    return pod;
+    return Pod.findByMesh(minefield, mineMesh);
 };
 
 Pod.GRAY = 0x606060;
@@ -88,7 +91,9 @@ Pod.getColor = function(podData) {
         case 3: return Pod.YELLOW;
         case 4: return Pod.ORANGE;
         case 5: return Pod.RED;
-        default: alert("Radiation of " + " is not valid");
+        default:
+            console.log("Radiation of " + " is not valid");
+            return Pod.GRAY;
     }
 };
 

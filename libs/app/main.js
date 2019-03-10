@@ -72,6 +72,17 @@ function addMinefieldTo(scene) {
     }
 }
 
+function updateMinefield(podData) {
+    for(var i = 0; i < podData.length; ++i) {
+        var data = podData[i];
+        var key = Pod.getKey(data.x, data.y, data.z);
+        var pod = minefield.pods[key];
+        pod.data = data;
+        Pod.update(pod);
+    }
+
+}
+
 function init() {
     gameId = get("gameId");
     getGameData(gameId);
@@ -91,6 +102,18 @@ function getGameData(id) {
     xhttp.send();
 }
 
+function revealPod(podId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            gameData = JSON.parse(this.responseText);
+            updateMinefield(gameData.pods);
+        }
+    };
+    xhttp.open("PATCH", "http://space-mines-api.herokuapp.com/game/" + gameId + "/pod/" + podId, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+}
 
 function startGame() {
 
@@ -136,7 +159,8 @@ function onMouseDown(event) {
                 Pod.mark(minefield, selected);
             }
             else {
-                Pod.select(minefield, selected);
+                var pod = Pod.select(minefield, selected);
+                revealPod(pod.data.id);
             }
             break;
         }
