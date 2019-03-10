@@ -8,6 +8,7 @@ var difficulty;
 var mineCount;
 var dimension;
 var gameId;
+var gameData;
 
 function get(name){
     if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
@@ -63,9 +64,9 @@ function renderScene() {
 }
 
 function addMinefieldTo(scene) {
-    minefield = Mine.createMinefield(dimension, mineCount);
-    for(var i = 0; i < minefield.size; ++i) {
-        var mesh = minefield.mines[i].mesh;
+    minefield = Pod.createMinefield(gameData.pods);
+    for (var key in minefield.pods) {
+        var mesh = minefield.pods[key].mesh;
         scene.add(mesh);
         mineMeshes.push(mesh);
     }
@@ -73,17 +74,29 @@ function addMinefieldTo(scene) {
 
 function init() {
     gameId = get("gameId");
-
-    Api.getGame(gameId);
+    getGameData(gameId);
 }
 
+function getGameData(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            gameId = id;
+            gameData = JSON.parse(this.responseText);
+            startGame();
+        }
+    };
+    xhttp.open("GET", "http://space-mines-api.herokuapp.com/game/" + id, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+}
+
+
 function startGame() {
-    mineCount = get("mineCount");
-    dimension = get("dimension");
 
     scene = new THREE.Scene();
     addMinefieldTo(scene);
-    camera = createCameraLookingAt(Mine.getCenter(minefield));
+    camera = createCameraLookingAt(Pod.getCenter(minefield));
     renderer = createRenderer();
 
     var spotlight = createSpotlight();
@@ -120,10 +133,10 @@ function onMouseDown(event) {
         selected = intersects[i].object;
         if(selected.visible) {
             if(event.ctrlKey || event.button != 0) {
-                Mine.mark(minefield, selected);
+                Pod.mark(minefield, selected);
             }
             else {
-                Mine.select(minefield, selected);
+                Pod.select(minefield, selected);
             }
             break;
         }
