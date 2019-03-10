@@ -17,4 +17,4 @@ Util.getPositionFromMouseEvent = function(event) {
     var pos = camera.position.clone().add(dir.multiplyScalar(distance));
 
     return pos;
-}
+};

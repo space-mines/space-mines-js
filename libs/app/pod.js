@@ -18,8 +18,16 @@ Pod.create = function (podData) {
 };
 
 Pod.update = function(pod) {
-    var color = Pod.getColor(pod.data);
-    pod.mesh.material = new THREE.MeshLambertMaterial({color: color});
+    var data = pod.data;
+    var mesh = pod.mesh;
+    if(data.radiation == 0) {
+        mesh.visible = false;
+    }
+    else {
+        mesh.visible = true;
+        var color = Pod.getColor(data);
+        pod.mesh.material = new THREE.MeshLambertMaterial({color: color});
+    }
 };
 
 Pod.dataToString = function(pod) {
@@ -85,7 +93,8 @@ Pod.getColor = function(podData) {
     }
     var radiation = podData.radiation;
     switch (radiation) {
-        case -1: return Pod.GRAY;
+        case -1:
+        case 0: return Pod.GRAY;
         case 1: return Pod.BLUE;
         case 2: return Pod.GREEN;
         case 3: return Pod.YELLOW;
