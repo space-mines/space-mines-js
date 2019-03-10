@@ -4,7 +4,8 @@ Pod = {radius: 3, spacing: 10};
 
 Pod.create = function (podData) {
     var geometry = new THREE.SphereGeometry(Pod.radius);
-    var material = new THREE.MeshLambertMaterial({color: 0xD3D3D3});
+    var color = Pod.getColor(podData);
+    var material = new THREE.MeshLambertMaterial({color: color});
     var mesh = new THREE.Mesh(geometry, material);
     var pod = {mesh: mesh, data: podData};
 
@@ -62,32 +63,33 @@ Pod.findByMesh = function(minefield, mineMesh) {
 
 Pod.select = function(minefield, mineMesh) {
     var pod = Pod.findByMesh(minefield, mineMesh);
-    alert(Pod.dataToString(pod));
+    pod.mesh.visible = false;
+    return pod;
 };
 
-Pod.reveal = function(mine) {
-    if(mine.isMine) {
-        mine.mesh.material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+Pod.GRAY = 0x606060;
+Pod.GRAY = 0x606060;
+Pod.BLUE = 0x0000FF;
+Pod.GREEN = 0x00FF00;
+Pod.YELLOW = 0xFFFF00;
+Pod.ORANGE = 0xFFA500;
+Pod.RED = 0xFF0000;
+Pod.MARKED = 0xFFFFFF;
+
+Pod.getColor = function(podData) {
+    if(podData.flagged) {
+        return Pod.MARKED;
     }
-    else if(mine.mineCount == 0) {
-        mine.mesh.visible = false;
+    var radiation = podData.radiation;
+    switch (radiation) {
+        case -1: return Pod.GRAY;
+        case 1: return Pod.BLUE;
+        case 2: return Pod.GREEN;
+        case 3: return Pod.YELLOW;
+        case 4: return Pod.ORANGE;
+        case 5: return Pod.RED;
+        default: alert("Radiation of " + " is not valid");
     }
-    else if(mine.mineCount == 1) {
-        mine.mesh.material = new THREE.MeshLambertMaterial({color: 0x0000FF});
-    }
-    else if(mine.mineCount == 2) {
-        mine.mesh.material = new THREE.MeshLambertMaterial({color: 0x00FF00});
-    }
-    else if(mine.mineCount == 3) {
-        mine.mesh.material = new THREE.MeshLambertMaterial({color: 0xFFFF00});
-    }
-    else if(mine.mineCount == 4) {
-        mine.mesh.material = new THREE.MeshLambertMaterial({color: 0xFFA500});
-    }
-    else {
-        mine.mesh.material = new THREE.MeshLambertMaterial({color: 0xFF0000});
-    }
-    mine.revealed = true;
 };
 
 Pod.mark = function(minefield, mineMesh) {
@@ -104,14 +106,10 @@ Pod.mark = function(minefield, mineMesh) {
 
     if(mine.marked) {
         mine.marked = false;
-        mine.mesh.material = new THREE.MeshLambertMaterial({color: 0xD3D3D3});
+        mine.mesh.material = new THREE.MeshLambertMaterial({color: Pod.GRAY});
     }
     else {
         mine.marked = true;
-        mine.mesh.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-    }
-
-    if(Pod.allActiveMinesMarked(minefield)) {
-        Pod.win(minefield);
+        mine.mesh.material = new THREE.MeshLambertMaterial({color: Pod.MARKED});
     }
 };
