@@ -9,6 +9,7 @@ var mineCount;
 var dimension;
 var gameId;
 var gameData;
+var playerId;
 
 function get(name){
     if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
@@ -84,20 +85,21 @@ function updateMinefield(podData) {
 }
 
 function init() {
-    gameId = get("gameId");
-    getGameData(gameId);
+    playerId = get("playerId");
+    getGameData(playerId);
 }
 
-function getGameData(id) {
+function getGameData(playerId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            gameId = id;
             gameData = JSON.parse(this.responseText);
+            gameId = gameData.id;
+            console.log("Game ID=" + gameId);
             startGame();
         }
     };
-    xhttp.open("GET", "http://space-mines-api.herokuapp.com/game/" + id, true);
+    xhttp.open("GET", "http://space-mines-api.herokuapp.com/player/" + playerId + "/game", true);
     xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send();
 }
