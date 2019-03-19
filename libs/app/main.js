@@ -10,6 +10,7 @@ var dimension;
 var gameId;
 var gameData;
 var playerId;
+var level;
 
 function get(name){
     if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
@@ -73,6 +74,22 @@ function addMinefieldTo(scene) {
     }
 }
 
+function removeMinefield(scene) {
+    for (var key in minefield.pods) {
+        var pod = minefield.pods[key];
+        var mesh = scene.getObjectByName(pod.mesh.name);
+        mesh.geometry.dispose();
+        mesh.material.dispose();
+        scene.remove(mesh);
+        mesh = undefined;
+        pod.mesh = undefined;
+        pod.data = undefined;
+    }
+    mineMeshes = [];
+    minefield = undefined;
+    //animate();
+}
+
 function updateMinefield(podData) {
     for(var i = 0; i < podData.length; ++i) {
         var data = podData[i];
@@ -95,6 +112,7 @@ function getGameData(playerId) {
         if (this.readyState == 4 && this.status == 200) {
             gameData = JSON.parse(this.responseText);
             gameId = gameData.id;
+            level = gameData.level;
             console.log("Game ID=" + gameId);
             startGame();
         }
@@ -108,8 +126,18 @@ function markPod(podId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            gameData = JSON.parse(this.responseText);
-            updateMinefield(gameData.pods);
+            var temp = JSON.parse(this.responseText);
+            if(temp.level != level) {
+                level = temp.level;
+                removeMinefield(scene);
+                gameData = temp;
+                addMinefieldTo(scene);
+                //startGame();
+            }
+            else {
+                gameData = temp;
+                updateMinefield(gameData.pods);
+            }
         }
     };
     xhttp.open("PUT", "http://space-mines-api.herokuapp.com/game/" + gameId + "/pod/" + podId, true);

@@ -9,6 +9,7 @@ Pod.create = function (podData) {
     var mesh = new THREE.Mesh(geometry, material);
     var pod = {mesh: mesh, data: podData};
 
+    mesh.name = podData.id;
     mesh.position.x = podData.x * Pod.spacing;
     mesh.position.y = podData.y * Pod.spacing;
     mesh.position.z = podData.z * Pod.spacing;
