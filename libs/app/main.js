@@ -177,7 +177,6 @@ function startGame() {
     var spotlight = createSpotlight();
     var ambientLight = new THREE.AmbientLight(0x505050);
 
-
     scene.add(ambientLight);
     scene.add(camera);
     scene.add(spotlight);
