@@ -43,7 +43,7 @@ function createCameraLookingAt(position) {
 }
 
 function addFlashlightTo(camera) {
-    var flashlight = new THREE.SpotLight(0xffffff,4,40);
+    var flashlight = new THREE.SpotLight(0xffffff,5,100);
     camera.add(flashlight);
     flashlight.position.set(0,0,1);
     flashlight.target = camera;

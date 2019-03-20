@@ -86,7 +86,7 @@ Pod.GREEN = 0x00FF00;
 Pod.YELLOW = 0xFFFF00;
 Pod.ORANGE = 0xFFA500;
 Pod.RED = 0xFF0000;
-Pod.MARKED = 0xFFFFFF;
+Pod.MARKED = 0xFF00FF;
 
 Pod.getColor = function(podData) {
     if(podData.flagged) {
