@@ -29,6 +29,8 @@ function createCameraLookingAt(position) {
     camera.position.set(50, 50, 125);
     camera.lookAt(position);
 
+    addFlashlightTo(camera);
+
     flyControls = new THREE.FlyControls(camera);
 
     flyControls.movementSpeed = 25;
@@ -38,6 +40,13 @@ function createCameraLookingAt(position) {
     flyControls.dragToLook = true;
 
     return camera;
+}
+
+function addFlashlightTo(camera) {
+    var flashlight = new THREE.SpotLight(0xffffff,4,40);
+    camera.add(flashlight);
+    flashlight.position.set(0,0,1);
+    flashlight.target = camera;
 }
 
 function createRenderer() {
