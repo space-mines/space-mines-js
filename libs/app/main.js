@@ -182,12 +182,17 @@ function startGame() {
     scene.add(spotlight);
 
     document.onmousedown = onMouseDown;
-    document.ontouchstart = onMouseDown;
+    document.ontouchstart = onTouchStart;
 
     document.getElementById("WebGL-output")
         .appendChild(renderer.domElement);
 
     renderScene(renderer, scene, camera);
+}
+
+function onTouchStart(event) {
+    alert("Touch started!!!");
+    onMouseDown(event);
 }
 
 function onMouseDown(event) {
