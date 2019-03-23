@@ -182,6 +182,7 @@ function startGame() {
     scene.add(spotlight);
 
     document.onmousedown = onMouseDown;
+    document.ontouchend = onMouseDown;
 
     document.getElementById("WebGL-output")
         .appendChild(renderer.domElement);
