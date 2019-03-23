@@ -192,7 +192,7 @@ function startGame() {
 
 function onTouchStart(event) {
     onMouseDown(event);
-    alert("Touch start over");
+    alert("Touch start over (x=" + event.clientX + ",y=" + event.clientY + ")");
 }
 
 function onMouseDown(event) {
